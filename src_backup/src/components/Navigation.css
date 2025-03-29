@@ -1,0 +1,15 @@
+.custom-dropdown-menu .dropdown-toggle::after {
+    content: none;
+  }
+ 
+  .bold-text {
+    font-weight: bold;
+    font-size: 20px; /* Adjust the font size as needed */
+  }
+  
+  /* Increase font size for all text in the Navbar */
+  .navbar a,
+  .navbar button,
+  .navbar label {
+    font-size: 18px; /* Adjust the font size for all text */
+  }

@@ -1,0 +1,11 @@
+.div {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 32px;
+  font-weight: 600;
+  height: 42px;
+  letter-spacing: -1px;
+  line-height: 50px;
+  text-align: center;
+  white-space: nowrap;
+}

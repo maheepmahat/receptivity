@@ -1,0 +1,37 @@
+.label {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    top: 70px; /* Adjust this value to match your navigation bar's height */
+    background-color: #ffffff;
+  }
+  
+  .label .title {
+    color: #000000;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 16px;
+    width: 100%;
+    padding: 10px 0; /* Add padding for spacing */
+  }
+  #main_container{
+    width: 700px;
+    height: 500px;
+    background-color: #D9D9D9;
+  }
+
+.discussionButton {
+    background-color: #007bff; /* Bootstrap blue */
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none; /* Remove default button border */
+}
+
+.discussionButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
