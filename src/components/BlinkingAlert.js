@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const BlinkingAlert = ({ text, borderColor, onClose }) => {
-    const [visible, setVisible] = useState(true);
+    const [blink, setBlink] = useState(true);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setVisible((prevVisible) => !prevVisible);
+            setBlink((prevBlink) => !prevBlink);
         }, 500); // Blinking interval in milliseconds
 
-        // Cleanup interval on component unmount
-        return () => {
-            clearInterval(intervalId);
-        };
+        return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
     return ReactDOM.createPortal(
@@ -25,13 +22,12 @@ const BlinkingAlert = ({ text, borderColor, onClose }) => {
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     padding: '10px',
-                    border: `2px solid ${borderColor || 'blue'}`,
+                    border: `2px solid ${blink ? borderColor || 'blue' : 'transparent'}`, // Only change border color
                     borderRadius: '5px',
                     textAlign: 'center',
                     color: 'black',
                     fontWeight: 'bold',
                     backgroundColor: 'lightblue',
-                    display: visible ? 'block' : 'none', // Toggle visibility for the entire modal
                 }}
             >
                 <div>{text}</div>
