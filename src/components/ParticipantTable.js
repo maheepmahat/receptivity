@@ -2,27 +2,19 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import { TableContainer, TableCell, TableRow } from "./ParticipantTableStyles";
 import styled from 'styled-components';
-import mqtt from "mqtt";
-import {getMqttClient} from "../mqttconfig";
+import { getMqttClient } from "../mqttconfig";
 
+// Utility to determine box color
 const getColorForParticipant = (response) => {
-    // Add logic here to determine color based on the participant's response
-    // For example:
     switch (response) {
-        case 'R':
-
-            return '#DF1616'; // Red color
-        case 'Y':
-
-            return '#F0DB1C'; // Yellow color
-        case 'G':
-
-            return '#35DE83'; // Green color
-        default:
-            return '#484846'; // Default color
+        case 'R': return '#DF1616'; // Red
+        case 'Y': return '#F0DB1C'; // Yellow
+        case 'G': return '#35DE83'; // Green
+        default: return '#484846'; // Default gray
     }
 };
 
+// Styled rectangle component
 export const ParticipantRectangle = styled.div`
     width: 35.873px;
     height: 23.743px;
@@ -30,59 +22,50 @@ export const ParticipantRectangle = styled.div`
     background: ${(props) => getColorForParticipant(props.response)};
 `;
 
+// Main component
 export default function ParticipantTable({ view }) {
-
     const isHostView = view === 'host';
     const [hashMap, setHashMap] = React.useState({});
+    const topic = '001/participants';
 
     React.useEffect(() => {
-        // MQTT connection
+        const client = getMqttClient();
 
-        // const brokerUrl = 'ws://receptivity.cs.vt.edu:9001';
-        // const brokerOptions = {
-        //     protocolId: 'MQTT',
-        //     host: 'receptivity.cs.vt.edu',
-        //     port: 9001,
-        //     username: 'rec',
-        //     password: 'eptivity',
-        // };
+        const handleMessage = (topic, message) => {
+            try {
+                const newHashMap = JSON.parse(message.toString());
+                setHashMap(newHashMap);
+            } catch (err) {
+                console.error("Invalid JSON from MQTT message:", err);
+            }
+        };
 
-
-        //const client = mqtt.connect(brokerUrl, brokerOptions);
-        const client = getMqttClient(); // Get the singleton client
-
-        const topic = '001/participants';
-
-        // Handle MQTT connection event
-        client.on('connect', () => {
+        const handleConnect = () => {
             client.subscribe(topic, (err) => {
-                if (!err) {
-                    //console.log(`Subscribed to MQTT topic: ${topic}`);
-                }
+                if (err) console.error("Subscription error:", err);
             });
-        });
+        };
 
-        // Handle incoming MQTT messages
-        client.on('message', (topic, message) => {
-            // Assuming the message received is a JSON object representing the new hashMap
+        client.on('connect', handleConnect);
+        client.on('message', handleMessage);
 
-            const newHashMap = JSON.parse(message.toString());
-            setHashMap(newHashMap); // Update the state with the new hashMap
-        });
-
-        // Clean up the MQTT connection when the component unmounts
         return () => {
-            client.end();
+            client.off('connect', handleConnect);
+            client.off('message', handleMessage);
+            // No client.end() since we're assuming shared client
         };
     }, []);
 
-
     return (
-        <>
-            <TableContainer>
-                <Table>
-                    <tbody>
-                        {hashMap && Object.entries(hashMap)?.map(([participantId, response]) => (
+        <TableContainer>
+            <Table>
+                <tbody>
+                    {Object.keys(hashMap).length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={2}>No participants yet.</TableCell>
+                        </TableRow>
+                    ) : (
+                        Object.entries(hashMap).map(([participantId, response]) => (
                             <TableRow key={participantId}>
                                 <TableCell>{participantId}</TableCell>
                                 {isHostView && (
@@ -91,10 +74,10 @@ export default function ParticipantTable({ view }) {
                                     </TableCell>
                                 )}
                             </TableRow>
-                        ))}
-                    </tbody>
-                </Table>
-            </TableContainer>
-        </>
-    )
+                        ))
+                    )}
+                </tbody>
+            </Table>
+        </TableContainer>
+    );
 }

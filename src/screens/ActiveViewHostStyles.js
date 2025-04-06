@@ -12,7 +12,7 @@ export const MainContainer = styled.div`
 export const FeedbackContainer = styled.div`
   width: 43%;
   height: 70.4%;
-  background-color: #d9d9d9;
+  background-color:#C683D7;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@ export const FeedbackContainer = styled.div`
 export const TopDivider = styled.div`
   height: 21px;
   width: 100%;
-  background-color: #484846;
+  background-color:rgb(107, 107, 49);
   margin: 0;
 `;
 
