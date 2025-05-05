@@ -12,7 +12,7 @@ export const MainContainer = styled.div`
 export const FeedbackContainer = styled.div`
   width: 43%;
   height: 70.4%;
-  background-color:#C683D7;
+  background-color:#E5E0FF;
   border-radius: 10px;
   display: flex;
   flex-direction: column;

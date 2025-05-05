@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import { TableContainer, TableCell, TableRow } from "./ParticipantTableStyles";
 import styled from 'styled-components';
-import { getMqttClient } from "../mqttconfig";
+import { getMqttClient } from "../../MQTT/mqttconfig";
 
 // Utility to determine box color
 const getColorForParticipant = (response) => {

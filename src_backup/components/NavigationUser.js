@@ -112,7 +112,7 @@ export default function NavigationUser(props) {
   }, [client]);
 
   return (
-      <Navbar expand="lg" className="bg-body-tertiary container-fluid">
+    <Navbar expand="lg" className="container-fluid" style={{ backgroundColor: '#8EA7E9' }}>
         <div className="d-flex justify-content-start align-items-center">
           <Nav.Link onClick={handleExitClick}>
             <FontAwesomeIcon icon={faSignOutAlt} />

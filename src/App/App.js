@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import JoinHost from './screens/JoinHost';  // This can be renamed to just `Join` to reflect the changes
-import ActiveView from './screens/ActiveView';  // All users will use ActiveView
-import ParticipantList from './screens/ParticipantList';
-import { SessionProvider } from './screens/SessionContext';
-import { UserProvider } from './screens/UserContext';
-import { getMqttClient } from './mqttconfig'; // Use the singleton client
+import JoinHost from '../screens/Host/JoinHost';  // This can be renamed to just `Join` to reflect the changes
+import ActiveView from '../screens/ActiveView/ActiveView';  // All users will use ActiveView
+import ParticipantList from '../screens/ParticipantList/ParticipantList';
+import { SessionProvider } from '../screens/Utility/SessionContext';
+import { UserProvider } from '../screens/Utility/UserContext';
+import { getMqttClient } from '../MQTT/mqttconfig'; // Use the singleton client
 
 
 function App() {

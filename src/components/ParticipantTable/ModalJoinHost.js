@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Button, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useSession } from '../screens/SessionContext';
-import { useUser } from '../screens/UserContext';
-import { SESSION_USERNAMES } from '../constants';
+import { useSession } from '../../screens/Utility/SessionContext';
+import { useUser } from '../../screens/Utility/UserContext';
+import { SESSION_USERNAMES } from '../../Utility/constants';
 
 const sessionUsernameMap = {
   demo: 'Demo',

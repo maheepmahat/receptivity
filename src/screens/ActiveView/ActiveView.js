@@ -1,29 +1,28 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import "./ActiveViewHost.css";
-import NavigationUser from '../components/NavigationUser';
-import FeedbackOption from "../components/FeedbackOption";
-import BlinkingAlert from '../components/BlinkingAlert';
-import fast_forward from "../images/fast_forward.png";
-import pause from "../images/pause.png";
-import play from "../images/play.png";
-import CompareBar from "../components/CompareBar";
-import PreferenceButton from "../components/PreferenceButton";
-import { getMqttClient } from '../mqttconfig';
+import NavigationUser from '../../components/NavigationUser/NavigationUser';
+import FeedbackOption from "../../components/FeedbackOption/FeedbackOption";
+import BlinkingAlert from '../../components/BlinkingAlert/BlinkingAlert';
+import fast_forward from "../../images/fast_forward.png";
+import pause from "../../images/pause.png";
+import play from "../../images/play.png";
+import CompareBar from "../../components/CompareBar/CompareBar";
+import PreferenceButton from "../../components/PreferenceButton/PreferenceButton";
+import { getMqttClient } from '../../MQTT/mqttconfig';
 import {
     BtnContainer,
     FeedbackContainer,
     MainContainer,
     PreferenceContainer,
-    TopDivider,
-} from "../screens/ActiveViewHostStyles";
-import { useSession } from './SessionContext';
-import { logEvent } from './logUtils';
+} from "./ActiveViewHostStyles";
+import { useSession } from '../Utility/SessionContext';
+import { logEvent } from '../Utility/logUtils';
 
 const COLOR_CODES = {
     red: '#DF1616',
     yellow: '#F0DB1C',
     green: '#35DE83',
-    neutral: '#944E63',
+    neutral: '#E5E0FF',
 };
 
 const DATA_TEMPLATE = [

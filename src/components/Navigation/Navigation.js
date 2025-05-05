@@ -6,7 +6,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import dropdown from '../images/Drag List Down.png';
 import { useNavigate } from 'react-router-dom';
-import { getMqttClient } from '../mqttconfig'; // Use the shared MQTT client
+import { getMqttClient } from '../../MQTT/mqttconfig'; // Use the shared MQTT client
 
 export default function Navigation() {
   const navigate = useNavigate();

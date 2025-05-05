@@ -1,6 +1,6 @@
 import React from 'react'
 import { MainContainer } from './ParticipantListStyles';
-import ParticipantTable from '../components/ParticipantTable';
+import ParticipantTable from '../../components/ParticipantTable/ParticipantTable';
 //import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

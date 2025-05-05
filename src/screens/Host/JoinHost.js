@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import "./JoinHost.css";
-import receptivitylogo from "../images/receptivitylogo.png";
-import joinsession from "../images/Frame 78.png";
-import ModalJoinHost from '../components/ModalJoinHost'; // Ensure this file is correctly imported
+import receptivitylogo from "../../images/receptivitylogo.png";
+import joinsession from "../../images/Frame 78.png";
+import ModalJoinHost from '../../components/ParticipantTable/ModalJoinHost'; // Ensure this file is correctly imported
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 

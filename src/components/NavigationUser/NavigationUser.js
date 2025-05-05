@@ -5,8 +5,8 @@ import Nav from 'react-bootstrap/Nav';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../screens/UserContext';
-import { getMqttClient } from '../mqttconfig';
+import { useUser } from '../../screens/Utility/UserContext';
+import { getMqttClient } from '../../MQTT/mqttconfig';
 
 // Default participants to empty array
 export default function NavigationUser({ participants = [] }) {

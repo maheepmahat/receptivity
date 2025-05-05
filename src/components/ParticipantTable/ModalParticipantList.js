@@ -1,5 +1,5 @@
-import { MainContainer } from "../screens/ParticipantListStyles"
-import ParticipantTable from '../components/ParticipantTable';
+import { MainContainer } from "../../screens/ParticipantList/ParticipantListStyles"
+import ParticipantTable from '../ParticipantTable';
 import Modal from 'react-bootstrap/Modal';
 
 
