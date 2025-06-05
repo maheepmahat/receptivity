@@ -34,6 +34,8 @@ export default function NavigationUser({ participants = [] }) {
         setShowParticipants(!showParticipants);
     };
 
+    console.log("Participants in NavigationUser:", participants);
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary container-fluid p-3">
             <div className="d-flex justify-content-start align-items-center">

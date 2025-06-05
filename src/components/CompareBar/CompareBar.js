@@ -1,25 +1,26 @@
-
 import React from "react";
 import { Container } from "./CompareBarStyles.js";
 
-var totalCount = 0;
 function getColorPercent(colors, count) {
-  totalCount = 0;
-  colors.forEach((element) => {
-    totalCount += element.count;
-  });
-  return Math.round((count * 100) / totalCount);
+  const totalCount = colors.reduce((sum, color) => sum + color.count, 0);
+  if (totalCount === 0) return 0; // Avoid division by zero
+  return (count / totalCount) * 100; // Return percentage as a decimal
 }
+
 function CompareBar(props) {
   const { colors } = props;
+
+  console.log("Colors in CompareBar:", colors);
+
   return (
-    <Container>
+    <Container style={{ width: "1000px", height: "20px", display: "flex", border: "1px solid black" }}>
       {colors.map((color, _id) => (
         <div
           key={_id}
           style={{
             backgroundColor: color.color,
-            width: `${getColorPercent(colors, color.count)}%`,
+            width: `${getColorPercent(colors, color.count)}%`, // Proportional width
+            height: "100%", // Full height of the bar
           }}
         ></div>
       ))}

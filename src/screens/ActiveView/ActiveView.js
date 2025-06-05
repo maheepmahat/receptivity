@@ -62,11 +62,12 @@ export default function ActiveView() {
     
 
     const updateCountsAndTotalUsers = useCallback((feedbackMap) => {
+        console.log("Feedback map:", feedbackMap);
         const counts = { R: 0, Y: 0, G: 0 };
         Object.values(feedbackMap).forEach(val => {
             if (counts[val] !== undefined) counts[val]++;
         });
-
+        console.log("Counts:", counts);
         setData(DATA_TEMPLATE.map(entry => ({
             ...entry,
             count:
@@ -74,7 +75,13 @@ export default function ActiveView() {
                 entry.color === COLOR_CODES.yellow ? counts.Y :
                 entry.color === COLOR_CODES.green ? counts.G : 0,
         })));
-
+        console.log("Updated data:", DATA_TEMPLATE.map(entry => ({
+            ...entry,
+            count:
+                entry.color === COLOR_CODES.red ? counts.R :
+                entry.color === COLOR_CODES.yellow ? counts.Y :
+                entry.color === COLOR_CODES.green ? counts.G : 0,
+        })));
         const stateMessage = JSON.stringify({
             countR: counts.R,
             countY: counts.Y,
@@ -84,6 +91,7 @@ export default function ActiveView() {
         client.publish(sessionID, stateMessage, (err) => {
             if (err) console.error(`Failed to broadcast state:`, err);
         });
+        
     }, [client, sessionID]);
 
     const participants = Object.entries(clientFeedbackMap).map(([name, val]) => ({
@@ -108,6 +116,7 @@ export default function ActiveView() {
             if (t !== topic) return;
 
             const msg = m.toString();
+            console.log("MQTT message received:", msg);
             const timestamp = new Date().toISOString();
             logEvent({ timestamp, topic, message: msg, action: "receive_feedback" });
 
@@ -133,6 +142,7 @@ export default function ActiveView() {
             }
 
             const [user, val] = msg.split('_');
+            console.log("Parsed user and value:", user, val);
             if (!user || !val) {
                 console.warn(`Invalid message format: ${msg}`);
                 return;
@@ -144,6 +154,7 @@ export default function ActiveView() {
 
                 const updated = { ...prev };
                 updated[user] = val === "clear" ? "clear" : val;
+                console.log("Updated clientFeedbackMap:", updated); 
                 updateCountsAndTotalUsers(updated);
                 return updated;
             });
@@ -164,6 +175,8 @@ export default function ActiveView() {
     }, [sessionID, handleClientFeedback]);
 
     const changePollCount = (_id, color) => {
+
+        console.log("changePollCount called with _id:", _id, "and color:", color);
         if (!username) {
             alert("Please set a username before providing feedback.");
             return;
@@ -172,7 +185,7 @@ export default function ActiveView() {
         const timestamp = new Date().toISOString();
         const code = _id === 1 ? "R" : _id === 2 ? "Y" : "G";
         const message = `${username}_${code}_${timestamp}`;
-
+        console.log("Publishing message:", message);
         client.publish(sessionID, message, (err) => {
             if (err) console.error("Publish error:", err);
         });
@@ -205,7 +218,18 @@ export default function ActiveView() {
         }
     ];
 
-    
+    const broadcastParticipants = () => {
+        const stateMessage = JSON.stringify(clientFeedbackMap);
+        client.publish(sessionID, stateMessage, (err) => {
+            if (err) console.error("Failed to broadcast participants:", err);
+        });
+    };
+
+    useEffect(() => {
+        broadcastParticipants();
+    }, [clientFeedbackMap]);
+
+    //console.log("data: ", data);
     return (
         <MainContainer className="flex flex-col gap-6 p-6 min-h-screen rounded-2xl shadow-md">
             <NavigationUser
@@ -220,7 +244,6 @@ export default function ActiveView() {
             className="p-6 rounded-xl shadow-sm"
             style={{ backgroundColor: selectedColor }} // Apply selected color here
         >
-            <br/>
             <h2 className="text-xl font-semibold mb-4 text-gray-800">My Feedback</h2>
             
 
@@ -243,15 +266,15 @@ export default function ActiveView() {
                     />
                 </div>
             )}
+            
+        </FeedbackContainer>
+        <h2 className="text-lg font-medium text-gray-700 mt-4">Group Feedback</h2>
 
-            {showCompareBar && (
+        {showCompareBar && (
                 <div className="mt-6">
                     <CompareBar colors={data} />
                 </div>
             )}
-        </FeedbackContainer>
-        <h2 className="text-lg font-medium text-gray-700 mt-4">Group Feedback</h2>
-
             <PreferenceContainer className="bg-white p-4 rounded-xl shadow-sm flex flex-col sm:flex-row gap-4 justify-between">
                 {buttons.map((btn, idx) => (
                     <PreferenceButton
