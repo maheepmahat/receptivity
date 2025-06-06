@@ -46,19 +46,24 @@ export default function ActiveView() {
 
     useEffect(() => {
         const storedUsername = sessionStorage.getItem("username");
-        if (!storedUsername) {
-            console.warn("No username found in sessionStorage.");
-            return;
-        }
+        if (!storedUsername) return;
     
         setUsername(storedUsername);
         setClientFeedbackMap(prev => ({ ...prev, [storedUsername]: "clear" }));
     
-        const message = `${storedUsername}_clear_${new Date().toISOString()}`;
-        client.publish(sessionID, message, (err) => {
-            if (err) console.error(`Failed to publish initial status: ${err}`);
+        // ✅ Subscribe FIRST
+        client.subscribe(sessionID, (err) => {
+            if (err) console.error("Subscribe failed:", err);
+    
+            // ✅ Only after subscribing, publish presence and request
+            const message = `${storedUsername}_clear_${new Date().toISOString()}`;
+            client.publish(sessionID, message);
+    
+            const requestMessage = JSON.stringify({ type: "request_participant_list" });
+            client.publish(sessionID, requestMessage);
         });
-    }, [sessionID, client]); 
+    }, [sessionID, client]);
+    
     
 
     const updateCountsAndTotalUsers = useCallback((feedbackMap) => {
@@ -75,13 +80,7 @@ export default function ActiveView() {
                 entry.color === COLOR_CODES.yellow ? counts.Y :
                 entry.color === COLOR_CODES.green ? counts.G : 0,
         })));
-        console.log("Updated data:", DATA_TEMPLATE.map(entry => ({
-            ...entry,
-            count:
-                entry.color === COLOR_CODES.red ? counts.R :
-                entry.color === COLOR_CODES.yellow ? counts.Y :
-                entry.color === COLOR_CODES.green ? counts.G : 0,
-        })));
+
         const stateMessage = JSON.stringify({
             countR: counts.R,
             countY: counts.Y,
@@ -122,10 +121,19 @@ export default function ActiveView() {
 
             try {
                 const parsed = JSON.parse(msg);
-                if (parsed.type === "pollfeedback") {
-                    setShowBlinkingAlert(true);
+                if (parsed.type === "request_participant_list") {
+                    // Only respond, don't show blinking alert
+                    const myFeedback = clientFeedbackMap[username] || "clear";
+                    const timestamp = new Date().toISOString();
+                    const response = `${username}_${myFeedback}_${timestamp}`;
+                    client.publish(sessionID, response);
                     return;
                 }
+                
+                if (parsed.type === "pollfeedback") {
+                    setShowBlinkingAlert(true); // ✅ only trigger here
+                    return;
+                }                
 
                 if (parsed.countR !== undefined) {
                     setData(DATA_TEMPLATE.map(entry => ({
@@ -166,7 +174,7 @@ export default function ActiveView() {
             client.unsubscribe(topic);
             client.removeListener('message', handleMessage);
         };
-    }, [client, sessionID, updateCountsAndTotalUsers]);
+    }, [client, sessionID, updateCountsAndTotalUsers, clientFeedbackMap, username]);
 
     useEffect(() => {
         if (sessionID) {
@@ -218,17 +226,6 @@ export default function ActiveView() {
         }
     ];
 
-    const broadcastParticipants = () => {
-        const stateMessage = JSON.stringify(clientFeedbackMap);
-        client.publish(sessionID, stateMessage, (err) => {
-            if (err) console.error("Failed to broadcast participants:", err);
-        });
-    };
-
-    useEffect(() => {
-        broadcastParticipants();
-    }, [clientFeedbackMap]);
-
     //console.log("data: ", data);
     return (
         <MainContainer className="flex flex-col gap-6 p-6 min-h-screen rounded-2xl shadow-md">
@@ -244,6 +241,7 @@ export default function ActiveView() {
             className="p-6 rounded-xl shadow-sm"
             style={{ backgroundColor: selectedColor }} // Apply selected color here
         >
+            <br/>
             <h2 className="text-xl font-semibold mb-4 text-gray-800">My Feedback</h2>
             
 
@@ -266,8 +264,9 @@ export default function ActiveView() {
                     />
                 </div>
             )}
+            <br/><br/> 
             
-        </FeedbackContainer>
+    </FeedbackContainer>
         <h2 className="text-lg font-medium text-gray-700 mt-4">Group Feedback</h2>
 
         {showCompareBar && (
